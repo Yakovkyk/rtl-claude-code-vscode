@@ -20,14 +20,14 @@
 
         // Selectors for chat content (add more as needed for different agents)
         chatSelectors: [
-            // Copilot/Claude
+            // Copilot/Claude generic
             '.chat-markdown-part.rendered-markdown',
             '.chat-markdown-part',
             '.rendered-markdown',
-            '.P.X', // Claude Code user messages
-            '.P.e', // Claude Code assistant messages
-            '._r',  // Claude Code RTL content container
-            '.d.undefined',   // Claude Code buttons with RTL content
+            // Claude Code 2.1.27+ (minified class names from Ln CSS module)
+            '.U.N',   // Ln.message + Ln.userMessageContainer (user message wrapper)
+            '.U.e',   // Ln.message + Ln.timelineMessage (assistant message wrapper)
+            '.ai',    // Ln.userMessage (user message text content)
             // Antigravity (Google)
             '.whitespace-pre-wrap', // User messages
             'div.prose.prose-sm'    // Agent messages
