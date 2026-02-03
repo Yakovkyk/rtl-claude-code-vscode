@@ -41,6 +41,24 @@
             '.view-line'
         ],
 
+        // Selectors for dialog elements (AskUserQuestion, Permission requests)
+        // Claude Code 2.1.29+ (minified class names from An/ai CSS modules)
+        dialogSelectors: {
+            // AskUserQuestion dialog (An CSS module)
+            questionsContainer: '.an',    // An.questionsContainer
+            questionText: '.sn',          // An.questionTextLarge
+            optionRow: '.eo',             // An.option
+            optionLabel: '.kn',           // An.optionLabel
+            optionDescription: '.yn',     // An.optionDescription
+            navBar: '.en',                // An.navigationBar
+            navTab: '.Ko',                // An.navTab
+            otherInput: '.ro',            // An.otherInput
+            // Permission dialog (ai CSS module)
+            permissionContainer: '.t',    // ai.permissionRequestContainer
+            permissionHeader: '.Co',      // ai.permissionRequestHeader
+            permissionDescription: '.a',  // ai.permissionRequestDescription
+        },
+
         // How often to check for new content (ms)
         checkInterval: 500
     };
@@ -352,6 +370,102 @@
     }
 
     /**
+     * Process dialog elements (AskUserQuestion, Permission requests)
+     * Handles RTL for question text, option labels, descriptions, and nav tabs
+     */
+    function processDialogs() {
+        const ds = CONFIG.dialogSelectors;
+
+        // === AskUserQuestion dialogs ===
+        document.querySelectorAll(ds.questionsContainer).forEach(container => {
+            if (!containsRTL(container.textContent)) return;
+
+            // Question text
+            container.querySelectorAll(ds.questionText).forEach(el => {
+                if (containsRTL(el.textContent)) {
+                    el.style.direction = 'rtl';
+                    el.style.textAlign = 'right';
+                    el.style.fontFamily = CONFIG.fontFamily;
+                }
+            });
+
+            // Option rows - flip layout so radio/checkbox moves to right side
+            container.querySelectorAll(ds.optionRow).forEach(el => {
+                if (containsRTL(el.textContent)) {
+                    el.style.direction = 'rtl';
+                }
+            });
+
+            // Option labels
+            container.querySelectorAll(ds.optionLabel).forEach(el => {
+                if (containsRTL(el.textContent)) {
+                    el.style.direction = 'rtl';
+                    el.style.textAlign = 'right';
+                    el.style.fontFamily = CONFIG.fontFamily;
+                }
+            });
+
+            // Option descriptions
+            container.querySelectorAll(ds.optionDescription).forEach(el => {
+                if (containsRTL(el.textContent)) {
+                    el.style.direction = 'rtl';
+                    el.style.textAlign = 'right';
+                    el.style.fontFamily = CONFIG.fontFamily;
+                }
+            });
+
+            // "Other" input field - add RTL listener
+            container.querySelectorAll(ds.otherInput).forEach(input => {
+                if (input.hasAttribute('data-rtl-listener')) return;
+                input.setAttribute('data-rtl-listener', 'true');
+                input.style.fontFamily = CONFIG.fontFamily;
+                input.addEventListener('input', function() {
+                    if (containsRTL(this.value)) {
+                        this.style.direction = 'rtl';
+                        this.style.textAlign = 'right';
+                    } else {
+                        this.style.direction = 'ltr';
+                        this.style.textAlign = 'left';
+                    }
+                });
+            });
+        });
+
+        // Navigation bar for multi-question dialogs
+        document.querySelectorAll(ds.navBar).forEach(bar => {
+            if (!containsRTL(bar.textContent)) return;
+            bar.style.direction = 'rtl';
+            bar.querySelectorAll(ds.navTab).forEach(tab => {
+                if (containsRTL(tab.textContent)) {
+                    tab.style.direction = 'rtl';
+                    tab.style.textAlign = 'right';
+                }
+            });
+        });
+
+        // === Permission dialogs ===
+        document.querySelectorAll(ds.permissionContainer).forEach(container => {
+            if (!containsRTL(container.textContent)) return;
+
+            container.querySelectorAll(ds.permissionHeader).forEach(el => {
+                if (containsRTL(el.textContent)) {
+                    el.style.direction = 'rtl';
+                    el.style.textAlign = 'right';
+                    el.style.fontFamily = CONFIG.fontFamily;
+                }
+            });
+
+            container.querySelectorAll(ds.permissionDescription).forEach(el => {
+                if (containsRTL(el.textContent)) {
+                    el.style.direction = 'rtl';
+                    el.style.textAlign = 'right';
+                    el.style.fontFamily = CONFIG.fontFamily;
+                }
+            });
+        });
+    }
+
+    /**
      * Process all chat elements (including Antigravity)
      */
     function processElements() {
@@ -418,6 +532,9 @@
 
         // Ensure all code blocks are LTR (run after RTL processing)
         ensureCodeBlocksLTR();
+
+        // Process dialog elements (AskUserQuestion, Permission requests)
+        processDialogs();
     }
 
     /**
