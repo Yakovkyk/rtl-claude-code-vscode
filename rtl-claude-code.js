@@ -201,22 +201,47 @@
     }
 
     /**
-     * Apply RTL styling to input boxes
+     * Find the mention mirror sibling of a Claude Code input element.
+     * Claude Code renders a transparent text input + a visible mirror overlay
+     * (mentionMirror with aria-hidden="true"). Both need the same direction.
+     */
+    function findInputMirror(inputElement) {
+        if (!inputElement.parentElement) return null;
+        // The mirror is a sibling div with aria-hidden="true"
+        return inputElement.parentElement.querySelector('[aria-hidden="true"]');
+    }
+
+    /**
+     * Apply RTL styling to input boxes (and their mirror if present)
      */
     function applyInputRTL(element) {
         element.style.direction = 'rtl';
         element.style.textAlign = 'right';
         element.style.fontFamily = CONFIG.fontFamily;
         element.setAttribute('data-rtl-input', 'true');
+
+        // Also apply to the mention mirror (visible text overlay)
+        const mirror = findInputMirror(element);
+        if (mirror) {
+            mirror.style.direction = 'rtl';
+            mirror.style.textAlign = 'right';
+        }
     }
 
     /**
-     * Remove RTL styling from input boxes
+     * Remove RTL styling from input boxes (and their mirror if present)
      */
     function removeInputRTL(element) {
         element.style.direction = 'ltr';
         element.style.textAlign = 'left';
         element.removeAttribute('data-rtl-input');
+
+        // Also restore the mirror
+        const mirror = findInputMirror(element);
+        if (mirror) {
+            mirror.style.direction = '';
+            mirror.style.textAlign = '';
+        }
     }
 
     /**
