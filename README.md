@@ -10,6 +10,8 @@ Hebrew (RTL) support for Claude Code extension in Visual Studio Code.
 
 ## Installation
 
+### Option A — Manual install (one-time)
+
 1. Find your Claude Code extension folder:
    ```
    C:\Users\<username>\.vscode\extensions\anthropic.claude-code-*\webview\
@@ -26,6 +28,17 @@ Hebrew (RTL) support for Claude Code extension in Visual Studio Code.
    ```
 
 4. Restart VS Code
+
+### Option B — Claude Code skill (auto-maintain)
+
+If you use Claude Code itself, you can install this as a skill that auto-diagnoses and re-applies the fix every time Claude Code updates (which wipes the injection).
+
+1. Copy the `skill/` folder into your Claude Code skills directory, renaming it to `rtl-fix`:
+   ```
+   cp -r skill ~/.claude/skills/rtl-fix
+   ```
+
+2. Then just tell Claude Code: "תקן RTL" (or "fix RTL"). The skill handles diagnosis, CSS selector updates, and reinstallation automatically.
 
 ## Uninstall
 
