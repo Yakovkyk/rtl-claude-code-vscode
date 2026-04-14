@@ -31,14 +31,29 @@ Hebrew (RTL) support for Claude Code extension in Visual Studio Code.
 
 ### Option B — Claude Code skill (auto-maintain)
 
-If you use Claude Code itself, you can install this as a skill that auto-diagnoses and re-applies the fix every time Claude Code updates (which wipes the injection).
+**Why this exists:** every time Claude Code updates, two things break the RTL fix:
+1. The injection into `webview/index.js` is wiped (the file is replaced clean).
+2. The CSS class names inside Claude Code are minified and **change between versions** (e.g. `.U.N` in one version, `.Q.Z` in the next) — so even reinjecting the old script won't work. The selectors must be updated to match the new version.
+
+The skill automates both:
+- **Diagnoses** which Claude Code versions are installed and whether RTL is currently active in each.
+- **Scans** the new CSS class names from the current Claude Code build.
+- **Updates** the selectors in `rtl-claude-code.js` if they changed.
+- **Reinstalls** (re-injects into `webview/index.js`).
+
+So the skill is both the *installer* and the *maintainer* — use it for first install AND every time after Claude Code updates.
+
+**Setup:**
 
 1. Copy the `skill/` folder into your Claude Code skills directory, renaming it to `rtl-fix`:
    ```
    cp -r skill ~/.claude/skills/rtl-fix
    ```
 
-2. Then just tell Claude Code: "תקן RTL" (or "fix RTL"). The skill handles diagnosis, CSS selector updates, and reinstallation automatically.
+2. Whenever Hebrew text looks wrong (or after a Claude Code update), just tell Claude Code:
+   > "תקן RTL" (or "fix RTL")
+
+   The skill will run end-to-end and report what it found and fixed. After it's done, reload the VS Code window (`Ctrl+Shift+P` → `Reload Window`).
 
 ## Uninstall
 
